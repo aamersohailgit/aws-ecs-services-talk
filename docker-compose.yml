@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  books-api:
+    build: ./books-api
+    ports:
+      - "9000:9000"
+    depends_on:
+      - postgres
+
+  users-api:
+    build: ./users-api
+    ports:
+      - "9001:9001"
+    depends_on:
+      - postgres
+
+  postgres:
+    build: ./postgresql
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+
+volumes:
+  postgres-data:

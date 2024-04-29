@@ -9,7 +9,7 @@ class TaskDefinitionStack(Stack):
         super().__init__(scope, id, **kwargs)
 
         # Load environment variables from .env.task_definition_config
-        env_config = dotenv_values(".env.task_definition_config")
+        env_config = dotenv_values("config/.env.task_definition_config")
 
         # Define the ECS Task Definition for users-api
         users_api_task_def = self.create_fargate_task_definition(
@@ -18,6 +18,7 @@ class TaskDefinitionStack(Stack):
             execution_role_arn=env_config["EXECUTION_ROLE_ARN"],
             container_name="users-api",
             image_uri=env_config["IMAGE_URI"],
+            port_name=env_config["PORT_NAME"],
             container_port=int(env_config["CONTAINER_PORT"]),
             cpu=int(env_config["CPU"]),  # Convert CPU to integer
             memory=int(env_config["MEMORY"]),  # Convert Memory to integer
@@ -32,6 +33,7 @@ class TaskDefinitionStack(Stack):
         execution_role_arn,
         container_name,
         image_uri,
+        port_name,
         container_port,
         cpu,
         memory,
@@ -70,7 +72,7 @@ class TaskDefinitionStack(Stack):
 
         # Add port mappings to the container
         container.add_port_mappings(
-            ecs.PortMapping(container_port=container_port, protocol=ecs.Protocol.TCP)
+            ecs.PortMapping(name=port_name,container_port=container_port, protocol=ecs.Protocol.TCP)
         )
 
         return task_definition

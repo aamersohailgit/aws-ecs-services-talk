@@ -5,6 +5,7 @@ import aws_cdk as cdk
 
 from infrastructure.infrastructure_stack import InfrastructureStack
 from stacks.task_definition_stack import TaskDefinitionStack
+from stacks.ecs_cluster_stack import EcsClusterStack
 
 
 app = cdk.App()
@@ -28,6 +29,14 @@ InfrastructureStack(
 TaskDefinitionStack(
     app,
     "TaskDefinitionStack",
+    env=cdk.Environment(
+        account=os.getenv("CDK_DEFAULT_ACCOUNT"), region=os.getenv("CDK_DEFAULT_REGION")
+    ),
+)
+
+EcsClusterStack(
+    app,
+    "EcsClusterStack",
     env=cdk.Environment(
         account=os.getenv("CDK_DEFAULT_ACCOUNT"), region=os.getenv("CDK_DEFAULT_REGION")
     ),
